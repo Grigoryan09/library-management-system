@@ -2,7 +2,7 @@ package org.example.librarymanagementsystem.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.librarymanagementsystem.model.Category;
-import org.example.librarymanagementsystem.repository.CategoryRepository;
+import org.example.librarymanagementsystem.service.CategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @GetMapping("/category")
     public String listCategories(Model model) {
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "category";
     }
 
@@ -28,7 +28,7 @@ public class CategoryController {
 
     @PostMapping("/category/add")
     public String saveCategory(@ModelAttribute("category") Category category){
-        categoryRepository.save(category);
+        categoryService.save(category);
         return "redirect:/category";
     }
 

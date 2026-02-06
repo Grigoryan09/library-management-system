@@ -3,8 +3,8 @@ package org.example.librarymanagementsystem.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.librarymanagementsystem.model.Book;
 import org.example.librarymanagementsystem.model.Member;
-import org.example.librarymanagementsystem.repository.BookRepository;
-import org.example.librarymanagementsystem.repository.MemberRepository;
+import org.example.librarymanagementsystem.service.BookService;
+import org.example.librarymanagementsystem.service.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +21,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberRepository memberRepository;
-    private final BookRepository bookRepository;
+    private final MemberService memberService;
+    private final BookService bookService;
 
     @GetMapping("/members")
     public String listMembers(Model model) {
-        model.addAttribute("members", memberRepository.findAll());
-        model.addAttribute("books", bookRepository.findAll());
+        model.addAttribute("members", memberService.findAll());
+        model.addAttribute("books", bookService.findAll());
         return "member";
     }
 
@@ -39,23 +39,23 @@ public class MemberController {
     @PostMapping("/members/add")
     public String saveMember(@ModelAttribute Member member) {
         member.setRegistrationDate(LocalDateTime.now());
-        memberRepository.save(member);
+        memberService.save(member);
         return "redirect:/members";
     }
 
     @PostMapping("/members/borrow")
     public String borrowBook(@RequestParam("memberId") int memberId, @RequestParam("bookId") int bookId) {
-        Member member = memberRepository.findById(memberId).orElseThrow();
-        Book book = bookRepository.findById(bookId).orElseThrow();
+        Member member = memberService.findById(memberId).orElseThrow();
+        Book book = bookService.findById(bookId).orElseThrow();
         member.getBorrowedBooks().add(book);
-        memberRepository.save(member);
+        memberService.save(member);
         return "redirect:/members";
     }
 
     @GetMapping("/members/details")
     public String getMemberDetails(@RequestParam("id") int id, Model model) {
 
-        Optional<Member> optionalMember = memberRepository.findById(id);
+        Optional<Member> optionalMember = memberService.findById(id);
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             model.addAttribute("member", member);
@@ -68,19 +68,19 @@ public class MemberController {
 
     @GetMapping("/members/delete")
     public String deleteMember(@RequestParam("id") int id) {
-        memberRepository.deleteById(id);
+        memberService.deleteById(id);
         return "redirect:/members";
     }
 
     @GetMapping("/members/details/delete")
     public String deleteBorrowedBook(@RequestParam("memberId") int memberId, @RequestParam("bookId") int bookId) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Optional<Member> optionalMember = memberService.findById(memberId);
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             List<Book> borrowedBooks = member.getBorrowedBooks();
             borrowedBooks.removeIf(book -> book.getId() == bookId);
             member.setBorrowedBooks(borrowedBooks);
-            memberRepository.save(member);
+            memberService.save(member);
         }
         return "redirect:/members/details?id=" + memberId;
     }
