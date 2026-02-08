@@ -38,6 +38,8 @@ public class Member {
 
     private LocalDateTime registrationDate;
 
+    private String pictureName;
+
     @ManyToMany
     @JoinTable(
             name = "member_book",

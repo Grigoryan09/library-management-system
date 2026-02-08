@@ -19,7 +19,7 @@
 <div class="container">
     <div class="form-container bg-white">
         <h2 class="text-center mb-4">Add Member</h2>
-        <form action="/members/add" method="POST">
+        <form action="/members/add" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Full Name</label>
                 <input type="text" name="fullName" class="form-control" placeholder="John Doe" required>
@@ -32,6 +32,7 @@
                 <label class="form-label">Phone Number</label>
                 <input type="text" name="phone" class="form-control" placeholder="+374..." required>
             </div>
+            <input type="file" name="pic" class="form-control"> <br>
             <button type="submit" class="btn btn-primary w-100">Add Member</button>
         </form>
     </div>

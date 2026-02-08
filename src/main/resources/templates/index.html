@@ -67,13 +67,18 @@
 
 <div class="container">
     <div class="title">Library Management System</div>
-
     <div class="buttons">
         <button><a href="/books">Books</a></button>
         <button><a href="/category">Categories</a></button>
         <button><a href="/members">Members</a></button>
     </div>
 </div>
+<div class="header">
+<button><a href="/loginPage">Login</a></button>
+<button><a href="/registerPage">Register</a></button>
+</div>
 
+<!--<span th:if="${user} != null"> Welcome <span th:text="${user.getName() + ' ' + user.getSurname()}"></span></span><br>-->
+<!--<a th:if="${user}  != null" href="/logout">Logout</a> <br>-->
 </body>
 </html>

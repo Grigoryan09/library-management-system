@@ -97,10 +97,10 @@
         </div>
     </div>
 
-    <!-- Members table -->
     <table>
         <thead>
         <tr>
+            <th>Picture</th>
             <th>ID</th>
             <th>Full Name</th>
             <th>Email</th>
@@ -110,6 +110,12 @@
         </thead>
         <tbody>
         <tr th:each="member : ${members}">
+            <td>
+                <img th:src="${member.pictureName != null && member.pictureName != ''} ?
+                  @{/image/get(pic=${member.pictureName})} :
+                  @{/imagess/img.png}"
+                     width="50"/>
+            </td>
             <td th:text="${member.id}"></td>
             <td th:text="${member.fullName}"></td>
             <td th:text="${member.email}"></td>

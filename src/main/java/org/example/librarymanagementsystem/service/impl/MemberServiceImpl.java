@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.librarymanagementsystem.model.Member;
 import org.example.librarymanagementsystem.repository.MemberRepository;
 import org.example.librarymanagementsystem.service.MemberService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,16 +17,28 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private  final MemberRepository memberRepository;
+    @Value("${library.management.upload.image.directory.path}")
+    private String imageDirectoryPath;
+    private final MemberRepository memberRepository;
 
     @Override
-    public List<Member> findAll(){
+    public List<Member> findAll() {
         return memberRepository.findAll();
     }
 
     @Override
-    public Member save(Member member) {
-        return memberRepository.save(member) ;
+    public Member save(Member member, MultipartFile multipartFile) {
+        if ( multipartFile != null && !multipartFile.isEmpty()) {
+            String fileName = System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
+            File file = new File(imageDirectoryPath + fileName);
+            try {
+                multipartFile.transferTo(file);
+                member.setPictureName(fileName);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return memberRepository.save(member);
     }
 
     @Override

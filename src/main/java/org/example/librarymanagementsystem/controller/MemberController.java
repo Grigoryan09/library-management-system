@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,18 +38,20 @@ public class MemberController {
     }
 
     @PostMapping("/members/add")
-    public String saveMember(@ModelAttribute Member member) {
+    public String saveMember(@ModelAttribute Member member, @RequestParam("pic") MultipartFile multipartFile) {
         member.setRegistrationDate(LocalDateTime.now());
-        memberService.save(member);
+        memberService.save(member, multipartFile);
         return "redirect:/members";
     }
 
     @PostMapping("/members/borrow")
-    public String borrowBook(@RequestParam("memberId") int memberId, @RequestParam("bookId") int bookId) {
+    public String borrowBook(@RequestParam("memberId") int memberId,
+                             @RequestParam("bookId") int bookId,
+                             @RequestParam("pic") MultipartFile multipartFile) {
         Member member = memberService.findById(memberId).orElseThrow();
         Book book = bookService.findById(bookId).orElseThrow();
         member.getBorrowedBooks().add(book);
-        memberService.save(member);
+        memberService.save(member, multipartFile);
         return "redirect:/members";
     }
 
@@ -73,14 +76,16 @@ public class MemberController {
     }
 
     @GetMapping("/members/details/delete")
-    public String deleteBorrowedBook(@RequestParam("memberId") int memberId, @RequestParam("bookId") int bookId) {
+    public String deleteBorrowedBook(@RequestParam("memberId") int memberId,
+                                     @RequestParam("bookId") int bookId,
+                                     @RequestParam("pic") MultipartFile multipartFile) {
         Optional<Member> optionalMember = memberService.findById(memberId);
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             List<Book> borrowedBooks = member.getBorrowedBooks();
             borrowedBooks.removeIf(book -> book.getId() == bookId);
             member.setBorrowedBooks(borrowedBooks);
-            memberService.save(member);
+            memberService.save(member, multipartFile);
         }
         return "redirect:/members/details?id=" + memberId;
     }
