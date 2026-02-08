@@ -74,11 +74,9 @@
     </div>
 </div>
 <div class="header">
-<button><a href="/loginPage">Login</a></button>
-<button><a href="/registerPage">Register</a></button>
+    <a th:if="${user}  != null" href="/logout">Logout</a>
+    <a th:if="${user}  == null" href="/loginPage">Login  ||</a>
+    <a th:if="${user}  == null" href="/registerPage">Register</a>
 </div>
-
-<!--<span th:if="${user} != null"> Welcome <span th:text="${user.getName() + ' ' + user.getSurname()}"></span></span><br>-->
-<!--<a th:if="${user}  != null" href="/logout">Logout</a> <br>-->
 </body>
 </html>
